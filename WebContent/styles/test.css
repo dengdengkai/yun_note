@@ -1,0 +1,13 @@
+
+*{
+	padding:0;
+	margin:0;
+}
+
+body{
+
+background: url(/images/main.jpg) no-repeat 0 0px;
+background-attachment:fixed;
+background-size:100%;
+height:auto;
+}

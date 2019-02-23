@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 命名空间保证元素的唯一性，避免发生冲突 -->
+<!-- namespace指定接口DAO的位置 -->
+<mapper namespace="com.cloud_note.dao.BookDAO" >
+    <!-- 类型写入完整包路径 ,插入的是实体类中的属性，下方id唯一-->
+   <!-- id 与方法名对应 ,parameterType与形参类型对应，
+   resultType与返回类型对应（此处填写其实体说在全路径）
+   查询中#{name}表示传入的值 String小写也可以-->
+   <!-- 返回类型 仍然是book类型，只是放在list中-->
+    <select id="findByUserId" 
+    parameterType="String"
+    resultType="com.cloud_note.entity.Book">
+    select * from cn_notebook 
+              where cn_user_id=#{userId} 
+               order by cn_notebook_createtime desc
+    </select>
+    
+    <!-- 插入（增加新笔记本） -->
+    <insert id="save"
+            parameterType="com.cloud_note.entity.Book">
+    insert into cn_notebook(
+                     cn_user_id,
+                     cn_notebook_id,
+                     cn_notebook_name,
+                     cn_notebook_type_id,
+                     cn_notebook_createtime)
+                     values(
+                     #{cn_user_id},
+                     #{cn_notebook_id},
+                     #{cn_notebook_name},
+                     #{cn_notebook_type_id},
+                     #{ cn_notebook_createtime})
+    </insert>
+ 
+ 
+</mapper>

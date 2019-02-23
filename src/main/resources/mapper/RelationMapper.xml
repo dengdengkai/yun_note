@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 命名空间保证元素的唯一性，避免发生冲突 -->
+<!-- namespace指定接口DAO的位置 -->
+<mapper namespace="com.cloud_note.dao.RelationDAO" >
+    <!-- 类型写入完整包路径 ,插入的是实体类中的属性，下方id唯一-->
+   <!-- id 与方法名对应 ,parameterType与形参类型对应，
+   resultType与返回类型对应（此处填写其实体说在全路径）
+   查询中#{name}表示传入的值 String小写也可以-->
+  
+  <!-- 此时对应不上，多了books -->
+  
+  <!-- 使用两条SQL语句加载数据 -->
+  
+  <select id="findUserAndBooks"
+      parameterType="String"
+      resultMap="userMap1">
+   select * from cn_user where cn_user_id=#{id}
+  </select>
+  <!-- 对上述返回结果进行处理 -->
+  <resultMap  id="userMap1" type="com.cloud_note.entity.User">
+     <id property="cn_user_id" column="cn_user_id"/><!-- 主键 -->
+     <result property="cn_user_name" column="cn_user_name"/>
+    <!-- 指定books属性是一个List集合，泛型为Book -->
+    <!-- javaType返回类型,
+       ofType是List中的每一个元素 
+       column是这个的外键-->
+     <collection property="books" 
+            javaType="java.util.List"
+            ofType="com.cloud_note.entity.Book"
+            select="findBooks" 
+            column="cn_user_id"
+            >
+     </collection>
+  </resultMap>
+    <select id="findBooks" parameterType="String"
+             resultType="com.cloud_note.entity.Book">
+    select * from cn_notebook
+             where cn_user_id=#{userId}
+    </select>
+    
+    
+    
+    
+    <!-- 一条sQL语句加载User -->
+    <select id="findUserAndBooks1" parameterType="string"
+    resultMap="userMap2">
+    select * from cn_user u join cn_notebook b 
+                 on(u.cn_user_id=b.cn_user_id) 
+                 where u.cn_user_id=#{userId}
+    </select>
+    
+    <resultMap type="com.cloud_note.entity.User" id="userMap2">
+    <!-- 定义cn_user字段装载，不能省略 -->
+    <id property="cn_user_id" column="cn_user_id"/>
+     <result property="cn_user_name" column="cn_user_name"/>
+     <result property="cn_user_nick" column="cn_user_nick"/>
+     <result property="cn_user_password" column="cn_user_password"/>
+     <result property="cn_user_token" column="cn_user_token"/>
+      <!--books是User里面的字段  -->
+     <collection property="books"
+                 javaType="java.util.List"
+                 ofType="com.cloud_note.entity.Book">
+           <id property="cn_notebook_id" column="cn_notebook_id"></id>
+           <result property="cn_user_id" column="cn_user_id"/>
+           <result property="cn_notebook_type_id" column="cn_notebook_type_id"/>
+           <result property="cn_notebook_name" column="cn_notebook_name"/>
+           <result property="cn_notebook_desc" column="cn_notebook_desc"/>
+           <result property="cn_notebook_createtime" column="cn_notebook_createtime"/>
+           
+     </collection>
+    </resultMap>
+    
+    
+    <!-- 两条语句加载Book和关联的User信息 -->
+    <select id="findBookAndUser"
+    resultMap="bookMap">
+    select * from cn_notebook
+    </select>
+    <resultMap id="bookMap" type="com.cloud_note.entity.Book">
+            <!-- 关联多个使用collection,单个association,user是Book中的字段 
+            column是关联的外键-->
+            <association property="user"
+            javaType="com.cloud_note.entity.User"
+            select="findUser"
+            column="cn_user_id">
+            
+            
+            </association>
+    </resultMap>
+    
+    <select id="findUser" 
+            parameterType="string"
+            resultType="com.cloud_note.entity.User">
+        select * from cn_user 
+              where cn_user_id=#{id}
+    </select>
+    
+    <!-- 一条语句关联Book和关联的User信息 -->
+    <select id="findBookAndUser1" resultMap="bookMap1">
+      select * from cn_notebook k join cn_user u on(k.cn_user_id=u.cn_user_id)
+    </select>
+    <resultMap type="com.cloud_note.entity.Book" id="bookMap1">
+       <id property="cn_notebook_id" column="cn_notebook_id"></id>
+           <result property="cn_user_id" column="cn_user_id"/>
+           <result property="cn_notebook_type_id" column="cn_notebook_type_id"/>
+           <result property="cn_notebook_name" column="cn_notebook_name"/>
+           <result property="cn_notebook_desc" column="cn_notebook_desc"/>
+           <result property="cn_notebook_createtime" column="cn_notebook_createtime"/>
+         
+           <association property="user"
+            javaType="com.cloud_note.entity.User">
+      <id property="cn_user_id" column="cn_user_id"/>
+     <result property="cn_user_name" column="cn_user_name"/>
+     <result property="cn_user_nick" column="cn_user_nick"/>
+     <result property="cn_user_password" column="cn_user_password"/>
+     <result property="cn_user_token" column="cn_user_token"/>
+            </association>
+    </resultMap>
+</mapper>

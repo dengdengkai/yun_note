@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 命名空间保证元素的唯一性，避免发生冲突 -->
+<!-- namespace指定接口DAO的位置 -->
+<mapper namespace="com.cloud_note.dao.ShareDAO" >
+    <!-- 类型写入完整包路径 ,插入的是实体类中的属性，下方id唯一-->
+   <!-- id 与方法名对应 ,parameterType与形参类型对应，
+   resultType与返回类型对应（此处填写其实体说在全路径）
+   查询中#{name}表示传入的值 String小写也可以-->
+   
+
+    
+    <insert id="save" 
+    parameterType="com.cloud_note.entity.Share">
+    insert into cn_share(
+           cn_share_id,
+           cn_share_title,
+           cn_share_body,
+           cn_note_id
+           ) 
+    values(
+       #{cn_share_id},
+       #{cn_share_title},
+       #{cn_share_body},
+       #{cn_note_id}
+      )
+    </insert>
+    
+    <select id="findLikeTitle" 
+            parameterType="Map"
+            resultType="com.cloud_note.entity.Share">
+            select * from cn_share  where cn_share_title
+                     like #{title} limit #{begin},3
+    </select>
+   
+   
+ 
+</mapper>

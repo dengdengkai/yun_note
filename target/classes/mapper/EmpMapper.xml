@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 命名空间保证元素的唯一性，避免发生冲突 -->
+<!-- namespace指定接口DAO的位置 -->
+<mapper namespace="com.cloud_note.dao.EmpDAO" >
+   
+   
+   <!-- MYSQL：数据库自动生成主键，获取主键值放入对象 的id属性中
+   -->
+ <insert id="save"
+ parameterType="com.cloud_note.entity.Emp"
+ useGeneratedKeys="true"
+ keyProperty="id">
+ insert into t_emp(name,age)
+             values(#{name},#{age});
+ </insert>
+</mapper>
